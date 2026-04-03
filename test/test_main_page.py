@@ -60,3 +60,14 @@ def test_categories(page, category):
     
     assert len(cat_of_items) > 0, "Нет объявлений"
     assert all(cat == category for cat in cat_of_items), f"Категория {category} работает некорректно"
+
+def test_urgent_mod(page):
+    main_page = MainPage(page)
+    main_page.goto()
+    main_page.set_urgent_toogle()
+    
+    cards = main_page.get_item()
+    
+    for card in cards:
+        assert card.locator("div[class^='_card__priority_']").count() > 0
+    
