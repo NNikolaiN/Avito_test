@@ -26,7 +26,7 @@ class MainPage():
     def sort_by_price(self, order: str = "asc"):    
         self.sorting_select.select_option(label="Цене")
         
-        if order.lower == "asc":
+        if order.lower() == "asc":
             self.order_select.select_option(label='По возрастанию')
         else:
             self.order_select.select_option(label='По убыванию')
