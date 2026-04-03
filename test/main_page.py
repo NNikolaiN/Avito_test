@@ -11,8 +11,9 @@ class MainPage():
         self.order_select: Locator = page.locator("label._filters__label_1iunh_8:has-text('Порядок') + select._filters__select_1iunh_21")
         self.urgent_toggle: Locator = page.get_by_role('checkbox')
         
-        self.announcement_cards: Locator = page.locator(".card_15fhn_2")
-        self.price_elements: Locator = page.locator("._card__price_15fhn_241")
+        self.announcement_cards: Locator = page.locator("div[class^='_card_']")
+        self.price_of_elements: Locator = page.locator(".div[class^='_card__price_']")
+        self.category_of_elements: Locator = page.locator("div[class^='_card__category_']")
         
     def goto(self):
         self.page.goto("https://cerulean-praline-8e5aa6.netlify.app/")
@@ -21,7 +22,8 @@ class MainPage():
         self.min_price_input.fill(str(min_price))
         self.max_price_input.fill(str(max_price))
         
-        self.price_elements.first.wait_for(state="visible", timeout=12000)
+        self.page.keyboard.press("Enter")
+        self.price_of_elements.first.wait_for(state="visible", timeout=12000)
     
     def sort_by_price(self, order: str = "asc"):    
         self.sorting_select.select_option(label="Цене")
@@ -31,18 +33,14 @@ class MainPage():
         else:
             self.order_select.select_option(label='По убыванию')
             
-        self.price_elements.first.wait_for(state="visible", timeout=12000)
+        self.price_of_elements.first.wait_for(state="visible", timeout=12000)
         
     def toggle_urgent_only(self, enable:bool):
         pass
     
     def get_price_of_items(self):
-        try:
-            self.price_elements.first.wait_for(state="visible", timeout=8000)
-        except:
-            self.announcement_cards.first.wait_for(state="visible", timeout=8000)
         
-        texts = self.price_elements.all_text_contents()
+        texts = self.price_of_elements.all_text_contents()
         
         list_price = []
         for text in texts:
@@ -51,3 +49,13 @@ class MainPage():
                 list_price.append(float(clean))
         
         return list_price
+    
+    def get_category_of_items(self):
+        category = self.category_of_elements.all_text_contents()
+        
+        return category
+            
+    def set_category(self, label):
+        self.category_select.select_option(label=label)
+
+        self.announcement_cards.first.wait_for(state="visible", timeout=11000)

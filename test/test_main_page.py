@@ -1,18 +1,26 @@
+import pytest
 from main_page import MainPage
 from playwright.sync_api import Page, Locator, expect
 
 
 # Тестирование фильтра "Диапазон цен"
-def test_filter_price(page):
+@pytest.mark.parametrize("min_price, max_price", [
+    (0, 1000),
+    (1000, 3000),
+    (3000, 10000),
+    (10000, 100000),
+])
+def test_filter_price(page, min_price, max_price):
     main_page = MainPage(page)
     main_page.goto()
-    main_page.apply_price_filter(1000,3000)
-    
-    prices = main_page.get_price_of_items()
-    
-    assert len(prices) > 0
-    assert all(1000 <= p <= 3000 for p in prices), "Фильтр цены не работает"
 
+    main_page.apply_price_filter(min_price, max_price)
+    prices = main_page.get_price_of_items()
+
+    assert len(prices) > 0, "Нет объявлений"
+    assert all(min_price <= p <= max_price for p in prices), \
+        f"Фильтр не работает для диапазона {min_price}-{max_price}"
+        
 # Тестироание сортировки "По цене"
 def test_sort_by_price(page):
     main_page = MainPage(page)
@@ -31,3 +39,24 @@ def test_sort_by_price_desc(page):
     price = main_page.get_price_of_items()
     
     assert price == sorted(price, reverse=True), "Сортировка по цене не работает корректно"
+
+# Тестирование категорий
+@pytest.mark.parametrize("category", [
+    "Недвижимость",
+    "Электроника",
+    "Транспорт",
+    "Работа",
+    "Услуги",
+    "Животные",
+    "Мода",
+    "Детское"
+])
+def test_categories(page, category):
+    main_page = MainPage(page)
+    main_page.goto()
+    
+    main_page.set_category(label=category)
+    cat_of_items = main_page.get_category_of_items()
+    
+    assert len(cat_of_items) > 0, "Нет объявлений"
+    assert all(cat == category for cat in cat_of_items), f"Категория {category} работает некорректно"
