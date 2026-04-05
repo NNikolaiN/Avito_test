@@ -3,8 +3,7 @@ from page import MainPage, StatPage
 from playwright.sync_api import Page, Locator, expect, sync_playwright
 
 
-# Тестирование фильтра "Диапазон цен"
-@pytest.mark.order(1)
+
 @pytest.mark.parametrize("min_price, max_price", [
     (0, 1000),
     (1000, 3000),
@@ -21,9 +20,8 @@ def test_filter_price(page, min_price, max_price):
     assert len(prices) > 0, "Нет объявлений"
     assert all(min_price <= p <= max_price for p in prices), \
         f"Фильтр не работает для диапазона {min_price}-{max_price}"
-        
-# Тестироание сортировки "По цене"\
-@pytest.mark.order(2)
+
+
 def test_sort_by_price(page):
     main_page = MainPage(page)
     main_page.goto()
@@ -33,7 +31,7 @@ def test_sort_by_price(page):
     
     assert price == sorted(price) , "Сортировка по цене не работает корректно"
 
-@pytest.mark.order(3)   
+  
 def test_sort_by_price_desc(page):
     main_page = MainPage(page)
     main_page.goto()
@@ -43,8 +41,6 @@ def test_sort_by_price_desc(page):
     
     assert price == sorted(price, reverse=True), "Сортировка по цене не работает корректно"
 
-# Тестирование категорий
-@pytest.mark.order(4)
 @pytest.mark.parametrize("category", [
     "Недвижимость",
     "Электроника",
@@ -65,7 +61,7 @@ def test_categories(page, category):
     assert len(cat_of_items) > 0, "Нет объявлений"
     assert all(cat == category for cat in cat_of_items), f"Категория {category} работает некорректно"
 
-@pytest.mark.order(5)
+
 def test_urgent_mod(page):
     main_page = MainPage(page)
     main_page.goto()
@@ -76,7 +72,7 @@ def test_urgent_mod(page):
     for card in cards:
         assert card.locator("div[class^='_card__priority_']").count() > 0, "переключатель 'Только Cрочные' не работает"
 
-@pytest.mark.order(6)
+
 def test_refresh_time(page):
     stat_page = StatPage(page)
     stat_page.goto()
@@ -86,7 +82,7 @@ def test_refresh_time(page):
     
     assert after_time == "5:00", "Обновление таймера не работает"
     
-@pytest.mark.order(7)
+
 def test_pause_time(page):
     stat_page = StatPage(page)
     stat_page.goto()
@@ -102,7 +98,6 @@ def test_start_time(page):
     
     assert stat_page.disabled_text.is_visible() == False, "Кнопка старта не работает"
 
-@pytest.mark.order(8)
 def test_theme_switch_on_mobile(playwright, page):
     iphone_12 = playwright.devices['iPhone 12']
     
