@@ -1,5 +1,5 @@
 import pytest
-from main_page import MainPage, StatPage
+from page import MainPage, StatPage
 from playwright.sync_api import Page, Locator, expect, sync_playwright
 
 
