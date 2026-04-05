@@ -47,11 +47,3 @@ playwright install
 ```bash
 pytest -v
 ```
-
-## ТЕСТ-КЕЙС
-
-TESTCASES.md
-
-## Баги
-
-BUGS.md
